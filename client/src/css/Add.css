@@ -1,0 +1,40 @@
+  .content .page-content-wrapper .container .form-group, .modal-body form .form-group {
+    height : 27px;
+    margin-bottom:7px;
+  }
+  .content .page-content-wrapper .container input,.form-horizontal .form-group input, .form-horizontal .form-group select {
+    height : 30px;
+  }
+  .kanan{
+    text-align: right;
+  }
+  .form-horizontal .form-group label{
+    text-align: left;
+  }
+  .formquotation{
+    display: none;
+  }
+  .ui-autocomplete {
+    height: 250px;
+    width: inherit;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index:1000 !important;
+  }
+  .prope {
+    width:100%;
+  }
+  #tabellistquotation td:nth-child(3),
+  #tabellistquotation td:nth-child(7)
+  {
+    text-align: center;
+  }
+  #tabellistquotation td:nth-child(4),
+  #tabellistquotation td:nth-child(5),
+  #tabellistquotation td:nth-child(6)
+  {
+    text-align: right;
+  }
+  textarea {
+    resize: none;
+  }
