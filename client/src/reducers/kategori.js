@@ -10,7 +10,8 @@ const initialState = {
     kategori: null,
     loading: true,
     totalPage: 0,
-    error: {}
+    error: {},
+    open : false,
 };
 
 export default function(state = initialState, action){
@@ -21,9 +22,10 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 kategories: payload.kategori,
-                totalPage : payload.totalPage,
+                totalPage: payload.totalPage,
                 error: {},
-                loading: false
+                loading: false,
+                open: false
             };
         case KATEGORIES_ERROR:
             return {
@@ -35,13 +37,25 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 error: payload,
-                loading: false
+                loading: false,
+                open : true
             }
         case GET_KATEGORI:
             return {
                 ...state,
                 kategori: payload,
-                loading: false
+                loading: false,
+                open: true
+            }
+        case 'OPEN_MODAL':
+            return {
+                ...state,
+                open: true
+            }
+        case 'CLOSE_MODAL':
+            return {
+                ...state,
+                open: false
             }
         default:
             return state

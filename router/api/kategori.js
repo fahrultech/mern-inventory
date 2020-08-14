@@ -4,15 +4,12 @@ const { check, validationResult } = require("express-validator/check");
 
 const Kategori = require("../../model/Kategori");
 
-let pN;
-let pS;
-
 router.get("/", async (req, res) => {
   try {
     const { pageSum, pageNumber, namaKategori } = req.query
-    pN = parseInt(pageNumber);
-    pS = parseInt(pageSum);
-    const totalPage = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).count();
+    const pN = parseInt(pageNumber);
+    const pS = parseInt(pageSum);
+    const totalPage = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).count()/pS;
     console.log(totalPage)
     const kategori = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).skip((pN-1)*pS).limit(pS);
     const rest = {
@@ -47,11 +44,12 @@ router.post(
     const errors = validationResult(req);
     
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
     const { namaKategori } = req.body;
     const findName = await Kategori.find({namaKategori})
-    if(findName){
+    console.log(findName)
+    if(findName.length !== 0){
       return res.status(400).json({errors: [{msg: 'Nama Kategori Sudah Ada'}]});
     }
     try {
@@ -61,12 +59,9 @@ router.post(
 
       await kategori.save();
       const totalPage = await Kategori.count();
-      kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-      const rest = {
-        kategori,
-        totalPage
-      }
-      res.json(rest);
+      //kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
+      kategori = await Kategori.find();
+      res.json(kategori);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -87,6 +82,11 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     
   }
+})
+
+router.put('/:id', async(req, res) => {
+  const { namaKategori } = req.body;
+  const kategori = await Kategori.findByIdAndUpdate({_id:req.params.id},{namaKategori})
 })
 
 module.exports = router;

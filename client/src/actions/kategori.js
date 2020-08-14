@@ -5,7 +5,16 @@ import {
     KATEGORIES_ERROR,
     ADD_KATEGORI_ERROR
 } from './types'
-
+export const openModal = () => dispatch => {
+    dispatch({
+        type: 'OPEN_MODAL'
+    });
+}
+export const closeModal = () => dispatch => {
+    dispatch({
+        type: 'CLOSE_MODAL'
+    });
+}
 export const getKategories = (pageData) => async dispatch =>{
     try{
         const res = await axios.get("/api/kategori", {
@@ -34,7 +43,6 @@ export const addKategori = formData => async dispatch =>{
                 'Content-Type': 'application/json'
             }
         };
-
         const res = await axios.post('/api/kategori', formData, config);
         dispatch({
             type: GET_KATEGORIES,
@@ -69,5 +77,14 @@ export const deleteKategori = id => async dispatch =>{
             payload: res.data
         })
     } catch (error) {
+    }
+}
+
+export const updateKategori = formData => async dispatch => {
+    try {
+        const id = formData.idKategori;
+        const res = await axios.put(`/api/kategori/${id}`, formData)
+    } catch (error) {
+        
     }
 }
