@@ -32,6 +32,15 @@ const Kategori = ({
     idKategori: "",
     namaKategori: "",
   });
+  const [order,setOrder] = useState(1);
+  const [key, setKey] = useState(1);
+  useEffect(() => {
+    document.querySelectorAll('table thead tr th').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        sortingTable(index)
+      })
+    })
+  })
   useEffect(() => {
     getKategories(pageData);
   }, [getKategories]);
@@ -42,6 +51,10 @@ const Kategori = ({
   const handleClose = () => {
     closeModal();
   };
+  const sortingTable = (id) =>{
+    setOrder(!setOrder)
+    console.log(order)
+  }
   const handleOpen = () => {
     setFormData({ ...formData, namaKategori: "", idKategori: "" });
     openModal();
@@ -50,21 +63,20 @@ const Kategori = ({
     setPageData({...pageData,pageNumber:data.selected+1})
   };
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, pageNumber:"1" });
   };
   const selectOnChange = e => {
     setPageData({...pageData, pageSum: parseInt(e.target.value)})
   }
   const submit = (e) => {
-    console.log('True')
     e.preventDefault();
     if (edit === true) {
       updateKategori(formData);
       getKategories(pageData)
+      setEdit(false)
       return;
     }
     addKategori(formData);
-    getKategories(pageData)
   };
   const editKategori = async (id) => {
     setEdit(true);
@@ -73,6 +85,7 @@ const Kategori = ({
   const hapusKategori = async (id) => {
     deleteKategori(id);
   };
+  const [ini, setIni] = useState(0);
   useEffect(() => {
     kategori !== null &&
       setFormData({
@@ -131,6 +144,7 @@ const Kategori = ({
                           <input
                             type="text"
                             onChange={(e) => {
+                              setKey(Math.random())
                               setPageData({
                                 ...pageData,
                                 namaKategori: e.target.value,
@@ -147,7 +161,7 @@ const Kategori = ({
                       >
                         <thead>
                           <tr>
-                            <th>Nama Kategori</th>
+                          <th className="sorting_desc"><a style={{ color:"#ffffff" }} href="javascript:void(0)"><i className="fa fa-fw fa-sort"></i></a>Nama Kategori</th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
@@ -179,6 +193,7 @@ const Kategori = ({
                   <div className="row">
                     <div className="col-md-12">
                       <ReactPaginate
+                        key={key}
                         pageCount={totalPage}
                         containerClassName="pagination"
                         pageClassName="paginate_button"
@@ -186,6 +201,7 @@ const Kategori = ({
                         onPageChange={editItem}
                         pageRangeDisplayed={4}
                         marginPagesDisplayed={1}
+                        initialPage={0}
                       />
                     </div>
                   </div>
