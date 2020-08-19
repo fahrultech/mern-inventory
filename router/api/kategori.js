@@ -1,67 +1,81 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator/check");
+const _ = require("lodash");
 
 const Kategori = require("../../model/Kategori");
 
-router.get("/", async (req, res) => {
+let pN = 1;
+let pS = 10;
+let nama = "";
+
+const getKategoris = async (req, res) => {
+  if (!_.isEmpty(req.query)) {
+    const { pageSum, pageNumber, namaKategori } = req.query;
+    pN = parseInt(pageNumber);
+    pS = parseInt(pageSum);
+    nama = namaKategori;
+  }
+  const totalPage =
+    (await Kategori.find({
+      namaKategori: new RegExp(".*" + nama + ".*", "i"),
+    }).count()) / pS;
+  const kategori = await Kategori.find({
+    namaKategori: new RegExp(".*" + nama + ".*", "i"),
+  })
+    .skip((pN - 1) * pS)
+    .limit(pS)
+    .sort('namaKategori');
+  const rest = {
+    kategori,
+    totalPage,
+  };
+  res.json(rest);
+};
+
+router.get("/", (req, res) => {
   try {
-    const { pageSum, pageNumber, namaKategori } = req.query
-    const pN = parseInt(pageNumber);
-    const pS = parseInt(pageSum);
-    const totalPage = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).count()/pS;
-    console.log(totalPage)
-    const kategori = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).skip((pN-1)*pS).limit(pS);
-    const rest = {
-      kategori,
-      totalPage
-    }
-    res.json(rest);
+    getKategoris(req, res);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
 
-router.get("/:id", async(req,res) => {
+router.get("/:id", async (req, res) => {
   try {
     const kategori = await Kategori.findById(req.params.id);
-    res.json(kategori)
+    res.json(kategori);
   } catch (error) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-})
+});
 
 router.post(
   "/",
-  [
-    check("namaKategori", "Nama Kategori Harus Di Masukkan")
-      .not()
-      .isEmpty()
-  ],
+  [check("namaKategori", "Nama Kategori Harus Di Masukkan").not().isEmpty()],
   async (req, res) => {
-    const errors = validationResult(req);
-    
+    console.log(req.query);
+    const errors = validationResult(req.body);
+
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
     const { namaKategori } = req.body;
-    const findName = await Kategori.find({namaKategori})
-    console.log(findName)
-    if(findName.length !== 0){
-      return res.status(400).json({errors: [{msg: 'Nama Kategori Sudah Ada'}]});
+    const findName = await Kategori.find({ namaKategori });
+
+    if (findName.length !== 0) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Nama Kategori Sudah Ada" }] });
     }
     try {
-      let kategori = new Kategori({
-        namaKategori
+      const kategori = new Kategori({
+        namaKategori,
       });
-
       await kategori.save();
-      const totalPage = await Kategori.count();
-      //kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-      kategori = await Kategori.find();
-      res.json(kategori);
+      getKategoris(req, res);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -69,24 +83,22 @@ router.post(
   }
 );
 
-router.delete('/:id', async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    let kategori = await Kategori.findByIdAndDelete(req.params.id);
-    const totalPage = await Kategori.count();
-    kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-    const rest = {
-      kategori,
-      totalPage
-    }
-    res.json(rest);
-  } catch (error) {
-    
-  }
-})
+    await Kategori.findByIdAndDelete(req.params.id);
+    res.json({ msg: "Kategori Deleted" });
+  } catch (error) {}
+});
 
-router.put('/:id', async(req, res) => {
-  const { namaKategori } = req.body;
-  const kategori = await Kategori.findByIdAndUpdate({_id:req.params.id},{namaKategori})
-})
+router.put("/:id", async (req, res) => {
+  try {
+    const { namaKategori } = req.body;
+    const kategori = await Kategori.findByIdAndUpdate(
+      { _id: req.params.id },
+      { namaKategori }
+    );
+    getKategoris(req,res)
+  } catch (error) {}
+});
 
 module.exports = router;

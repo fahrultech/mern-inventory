@@ -24,6 +24,7 @@ export const getKategories = (pageData) => async dispatch =>{
                 namaKategori : pageData.namaKategori
             }
         })
+        console.log(res)
         dispatch({
             type: GET_KATEGORIES,
             payload: res.data
@@ -36,14 +37,15 @@ export const getKategories = (pageData) => async dispatch =>{
     }
 }
 
-export const addKategori = formData => async dispatch =>{
+export const addKategori = (formData, pageData) => async dispatch =>{
     try {
         const config = {
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
         };
         const res = await axios.post('/api/kategori', formData, config);
+        
         dispatch({
             type: GET_KATEGORIES,
             payload: res.data
@@ -61,20 +63,20 @@ export const getKategori = id => async dispatch => {
         const res = await axios.get(`/api/kategori/${id}`)
         dispatch({
             type: GET_KATEGORI,
-            payload : res.data
+            payload: res.data
         })
 
     } catch (error) {
     }
 }
 
-export const deleteKategori = id => async dispatch =>{
+export const deleteKategori = (id,baru) => async dispatch =>{
     try {
         const res = await axios.delete(`/api/kategori/${id}`);
-
+        console.log(baru)
         dispatch({
-            type: GET_KATEGORIES,
-            payload: res.data
+            type: 'DELETE_KATEGORI',
+            payload: baru
         })
     } catch (error) {
     }
@@ -84,6 +86,10 @@ export const updateKategori = formData => async dispatch => {
     try {
         const id = formData.idKategori;
         const res = await axios.put(`/api/kategori/${id}`, formData)
+        dispatch({
+            type: GET_KATEGORIES,
+            payload: res.data
+        })
     } catch (error) {
         
     }

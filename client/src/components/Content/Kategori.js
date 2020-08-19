@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
+import _, { sortedLastIndexBy } from "lodash";
 import ReactPaginate from "react-paginate";
 import {
   getKategories,
@@ -35,43 +36,52 @@ const Kategori = ({
   useEffect(() => {
     getKategories(pageData);
   }, [getKategories]);
+
   useEffect(() => {
-    getKategories(pageData)
+    getKategories(pageData);
   }, [pageData]);
   const [edit, setEdit] = useState(false);
   const handleClose = () => {
     closeModal();
   };
   const handleOpen = () => {
+    setEdit(false);
     setFormData({ ...formData, namaKategori: "", idKategori: "" });
     openModal();
   };
   const editItem = (data) => {
-    setPageData({...pageData,pageNumber:data.selected+1})
+    setPageData({ ...pageData, pageNumber: data.selected + 1 });
   };
+  console.log(pageData);
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const selectOnChange = e => {
-    setPageData({...pageData, pageSum: parseInt(e.target.value)})
-  }
+  const selectOnChange = (e) => {
+    setPageData({ ...pageData, pageSum: parseInt(e.target.value) });
+  };
+  console.log(error);
   const submit = (e) => {
-    console.log('True')
     e.preventDefault();
     if (edit === true) {
       updateKategori(formData);
-      getKategories(pageData)
       return;
     }
-    addKategori(formData);
-    getKategories(pageData)
+    addKategori(formData, pageData);
   };
-  const editKategori = async (id) => {
+  const editKategori = (id) => {
     setEdit(true);
-    await getKategori(id);
+    getKategori(id);
+  };
+  const urutTabel = () => {
+    _.orderBy(kategories, ["namaKategori"], ["desc"]);
   };
   const hapusKategori = async (id) => {
-    deleteKategori(id);
+    if (window.confirm("Apakah data ini akan dihapus?")) {
+      const idx = kategories.map((item) => item._id).indexOf(id);
+      const baru = [...kategories];
+      baru.splice(idx, 1);
+      deleteKategori(id, baru);
+    }
   };
   useEffect(() => {
     kategori !== null &&
@@ -133,6 +143,7 @@ const Kategori = ({
                             onChange={(e) => {
                               setPageData({
                                 ...pageData,
+                                pageNumber: 1,
                                 namaKategori: e.target.value,
                               });
                             }}
@@ -147,7 +158,13 @@ const Kategori = ({
                       >
                         <thead>
                           <tr>
-                            <th>Nama Kategori</th>
+                            <th>
+                              <i
+                                onClick={urutTabel}
+                                className="fa fa-fw fa-sort"
+                              ></i>
+                              Nama Kategori
+                            </th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
@@ -179,6 +196,7 @@ const Kategori = ({
                   <div className="row">
                     <div className="col-md-12">
                       <ReactPaginate
+                        key={pageData.namaKategori}
                         pageCount={totalPage}
                         containerClassName="pagination"
                         pageClassName="paginate_button"

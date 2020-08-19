@@ -5,6 +5,8 @@ import {
     ADD_KATEGORI_ERROR 
 } from '../actions/types'
 
+import _ from 'lodash';
+
 const initialState = {
     kategories: [],
     kategori: null,
@@ -25,13 +27,23 @@ export default function(state = initialState, action){
                 totalPage: payload.totalPage,
                 error: {},
                 loading: false,
-                open: false
+                open: false,
             };
         case KATEGORIES_ERROR:
             return {
                 ...state,
                 error: payload,
                 loading: false
+            }
+        case 'ADD_KATEGORI':
+            return {
+                ...state,
+                open: false
+            }
+        case 'DELETE_KATEGORI':
+            return {
+                ...state,
+                kategories: payload
             }
         case ADD_KATEGORI_ERROR:
             return {
