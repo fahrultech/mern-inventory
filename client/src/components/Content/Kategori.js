@@ -50,6 +50,8 @@ const Kategori = ({
     getKategories(pageData);
   }, [pageData]);
   const [edit, setEdit] = useState(false);
+
+  // Logic for closing modal for both add or edit
   const handleClose = () => {
     closeModal();
   };
@@ -57,6 +59,7 @@ const Kategori = ({
     setOrder(!setOrder)
     console.log(order)
   }
+  // Open Modal For Adding New Kategori
   const handleOpen = () => {
     setEdit(false);
     setFormData({ ...formData, namaKategori: "", idKategori: "" });
@@ -72,7 +75,8 @@ const Kategori = ({
   const selectOnChange = (e) => {
     setPageData({ ...pageData, pageSum: parseInt(e.target.value) });
   };
-  console.log(error);
+
+  // Store or Update Kategori
   const submit = (e) => {
     e.preventDefault();
     if (edit === true) {
@@ -81,6 +85,8 @@ const Kategori = ({
     }
     addKategori(formData, pageData);
   };
+
+  // Open Modal Or Show For Editing Kategori
   const editKategori = (id) => {
     setEdit(true);
     getKategori(id);
@@ -88,6 +94,8 @@ const Kategori = ({
   const urutTabel = () => {
     _.orderBy(kategories, ["namaKategori"], ["desc"]);
   };
+
+  // Deleteing Kategori
   const hapusKategori = async (id) => {
     if (window.confirm("Apakah data ini akan dihapus?")) {
       const idx = kategories.map((item) => item._id).indexOf(id);
@@ -96,7 +104,6 @@ const Kategori = ({
       deleteKategori(id, baru);
     }
   };
-  const [ini, setIni] = useState(0);
   useEffect(() => {
     kategori !== null &&
       setFormData({
