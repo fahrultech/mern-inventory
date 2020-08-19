@@ -33,6 +33,15 @@ const Kategori = ({
     idKategori: "",
     namaKategori: "",
   });
+  const [order,setOrder] = useState(1);
+  const [key, setKey] = useState(1);
+  useEffect(() => {
+    document.querySelectorAll('table thead tr th').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        sortingTable(index)
+      })
+    })
+  })
   useEffect(() => {
     getKategories(pageData);
   }, [getKategories]);
@@ -44,6 +53,10 @@ const Kategori = ({
   const handleClose = () => {
     closeModal();
   };
+  const sortingTable = (id) =>{
+    setOrder(!setOrder)
+    console.log(order)
+  }
   const handleOpen = () => {
     setEdit(false);
     setFormData({ ...formData, namaKategori: "", idKategori: "" });
@@ -54,7 +67,7 @@ const Kategori = ({
   };
   console.log(pageData);
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value, pageNumber:"1" });
   };
   const selectOnChange = (e) => {
     setPageData({ ...pageData, pageSum: parseInt(e.target.value) });
@@ -83,6 +96,7 @@ const Kategori = ({
       deleteKategori(id, baru);
     }
   };
+  const [ini, setIni] = useState(0);
   useEffect(() => {
     kategori !== null &&
       setFormData({
@@ -141,6 +155,7 @@ const Kategori = ({
                           <input
                             type="text"
                             onChange={(e) => {
+                              setKey(Math.random())
                               setPageData({
                                 ...pageData,
                                 pageNumber: 1,
@@ -204,6 +219,7 @@ const Kategori = ({
                         onPageChange={editItem}
                         pageRangeDisplayed={4}
                         marginPagesDisplayed={1}
+                        initialPage={0}
                       />
                     </div>
                   </div>
