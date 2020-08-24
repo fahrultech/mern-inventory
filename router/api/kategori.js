@@ -4,8 +4,6 @@ const { check, validationResult } = require("express-validator/check");
 const _ = require("lodash");
 
 const Kategori = require("../../model/Kategori");
-let pN;
-let pS;
 
 let pN = 1;
 let pS = 10;
@@ -37,21 +35,7 @@ const getKategoris = async (req, res) => {
 
 router.get("/", (req, res) => {
   try {
-<<<<<<< HEAD
-    getKategoris(req, res);
-=======
-    const { pageSum, pageNumber, namaKategori } = req.query
-    pN = parseInt(pageNumber);
-    pS = parseInt(pageSum);
-    const totalPage = Math.ceil(await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).countDocuments()/pS);
-    const kategori = await Kategori.find({namaKategori: new RegExp('.*' + namaKategori + '.*' ,'i') }).skip((pN-1)*pS).limit(pS).sort({namaKategori:'desc'});
-    
-    const rest = {
-      kategori,
-      totalPage
-    }
-    res.json(rest);
->>>>>>> 103856a0b7b6421f7dc77e16503ee6b6464c758a
+    getKategoris(req, res)
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -91,9 +75,6 @@ router.post(
         namaKategori,
       });
       await kategori.save();
-<<<<<<< HEAD
-      getKategoris(req, res);
-=======
       const totalPage = Math.ceil(await Kategori.countDocuments()/pS);
       kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
       //kategori = await Kategori.find();
@@ -102,7 +83,6 @@ router.post(
         totalPage
       }
       res.json(rest);
->>>>>>> 103856a0b7b6421f7dc77e16503ee6b6464c758a
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
