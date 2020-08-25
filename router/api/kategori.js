@@ -77,7 +77,7 @@ router.post(
       await kategori.save();
       const totalPage = Math.ceil(await Kategori.countDocuments()/pS);
       kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-      //kategori = await Kategori.find();
+      
       const rest = {
         kategori,
         totalPage

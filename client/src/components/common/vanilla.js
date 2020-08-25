@@ -8,7 +8,6 @@ const vanilla = () => {
                 }
             })
             var kk = item.parentNode.querySelectorAll("ul li").length
-            console.log(kk)
             if(this.querySelector(".pull-right i").classList.contains("mdi-plus")){
                this.querySelector(".pull-right i").classList.remove("mdi-plus");
                this.querySelector(".pull-right i").classList.add("mdi-minus");
