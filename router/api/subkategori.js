@@ -26,15 +26,23 @@ const getSubkategoris = async (req, res) => {
     .skip((pN - 1) * pS)
     .limit(pS)
     .sort('namaSubkategori');
-  const rest = {
-    subkategori,
-    totalPage,
-  };
-  res.json(rest);
+  console.log(subkategori)
+  if(subkategori.length !== 0){
+    const rest = {
+      subkategori,
+      totalPage,
+    };
+    console.log(rest)
+    res.json(rest);
+    return
+  }
+  
+  res.json();
 };
 
 router.get("/", (req, res) => {
   try {
+    console.log('caleed')
     getSubkategoris(req, res)
   } catch (err) {
     console.error(err.message);
@@ -59,7 +67,7 @@ router.post(
       check("categoryId", "Kategori Harus Di Masukkan").not().isEmpty()
   ],
   async (req, res) => {
-    const errors = validationResult(req.body);
+    const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
@@ -73,19 +81,12 @@ router.post(
         .json({ errors: [{ msg: "Nama Subkategori Sudah Ada" }] });
     }
     try {
-      const subkategori = new Kategori({
-        namaKategori,
+      const subkategori = new Subkategori({
+        namaSubkategori,
         categoryId
       });
       await subkategori.save();
-      const totalPage = Math.ceil(await Subkategori.countDocuments()/pS);
-      subkategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-      
-      const rest = {
-        subkategori,
-        totalPage
-      }
-      res.json(rest);
+      res.json({msg : 'saved'});
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");

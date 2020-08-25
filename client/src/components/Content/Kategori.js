@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
-import _, { sortedLastIndexBy } from "lodash";
+import _ from "lodash";
 import ReactPaginate from "react-paginate";
 import {
   getKategories,
@@ -33,15 +33,14 @@ const Kategori = ({
     idKategori: "",
     namaKategori: "",
   });
-  const [order,setOrder] = useState(1);
-  const [key, setKey] = useState(1);
+  const [order, setOrder] = useState(1);
   useEffect(() => {
-    document.querySelectorAll('table thead tr th').forEach((item, index) => {
-      item.addEventListener('click', () => {
-        sortingTable(index)
-      })
-    })
-  })
+    document.querySelectorAll("table thead tr th").forEach((item, index) => {
+      item.addEventListener("click", () => {
+        sortingTable(index);
+      });
+    });
+  });
   useEffect(() => {
     getKategories(pageData);
   }, [getKategories]);
@@ -55,10 +54,11 @@ const Kategori = ({
   const handleClose = () => {
     closeModal();
   };
-  const sortingTable = (id) =>{
-    setOrder(!setOrder)
-    console.log(order)
-  }
+  const sortingTable = (id) => {
+    setOrder(!setOrder);
+    console.log(order);
+  };
+  console.log(error);
   // Open Modal For Adding New Kategori
   const handleOpen = () => {
     setEdit(false);
@@ -68,9 +68,13 @@ const Kategori = ({
   const editItem = (data) => {
     setPageData({ ...pageData, pageNumber: data.selected + 1 });
   };
-  console.log(pageData);
+
   const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value, pageNumber:"1" });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+      pageNumber: "1",
+    });
   };
   const selectOnChange = (e) => {
     setPageData({ ...pageData, pageSum: parseInt(e.target.value) });
@@ -83,7 +87,7 @@ const Kategori = ({
       updateKategori(formData);
       return;
     }
-    addKategori(formData, pageData);
+    addKategori(formData);
   };
 
   // Open Modal Or Show For Editing Kategori
@@ -162,7 +166,6 @@ const Kategori = ({
                           <input
                             type="text"
                             onChange={(e) => {
-                              setKey(Math.random())
                               setPageData({
                                 ...pageData,
                                 pageNumber: 1,

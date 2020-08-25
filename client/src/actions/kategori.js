@@ -15,6 +15,17 @@ export const closeModal = () => dispatch => {
         type: 'CLOSE_MODAL'
     });
 }
+export const getAllKategori = () => async dispatch =>{
+    try {
+        const res = await axios.get('/api/kategori/no');
+        dispatch({
+            type: 'GET_ALL_KATEGORIES',
+            payload : res.data
+        })
+    } catch (error) {
+        
+    }
+}
 export const getKategories = (pageData) => async dispatch =>{
     try{
         const res = await axios.get("/api/kategori", {
@@ -37,7 +48,7 @@ export const getKategories = (pageData) => async dispatch =>{
     }
 }
 
-export const addKategori = (formData, pageData) => async dispatch =>{
+export const addKategori = (formData) => async dispatch =>{
     try {
         const config = {
             headers: {

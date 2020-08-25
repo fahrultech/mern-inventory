@@ -29,6 +29,11 @@ export default function(state = initialState, action){
                 loading: false,
                 open: false,
             };
+        case 'GET_ALL_KATEGORIES':
+            return {
+                ...state,
+                kategories : payload
+            }
         case KATEGORIES_ERROR:
             return {
                 ...state,

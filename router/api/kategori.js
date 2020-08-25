@@ -32,7 +32,14 @@ const getKategoris = async (req, res) => {
   };
   res.json(rest);
 };
-
+router.get("/no", async (req, res) => {
+  try {
+    const kategori = await Kategori.find();
+    res.json(kategori)
+  } catch (error) {
+    
+  }
+})
 router.get("/", (req, res) => {
   try {
     getKategoris(req, res)
@@ -56,9 +63,8 @@ router.post(
   "/",
   [check("namaKategori", "Nama Kategori Harus Di Masukkan").not().isEmpty()],
   async (req, res) => {
-    console.log(req.query);
-    const errors = validationResult(req.body);
-
+   
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
@@ -75,14 +81,7 @@ router.post(
         namaKategori,
       });
       await kategori.save();
-      const totalPage = Math.ceil(await Kategori.countDocuments()/pS);
-      kategori = await Kategori.find().skip((pN-1)*pS).limit(pS);
-      
-      const rest = {
-        kategori,
-        totalPage
-      }
-      res.json(rest);
+      getKategoris(req, res);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
