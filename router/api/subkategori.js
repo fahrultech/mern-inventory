@@ -27,14 +27,6 @@ const getSubkategoris = async (req, res) => {
     .limit(pS)
     .sort('namaSubkategori')
     .populate('kategori')
-  
-  const mm = subkategori.map(item => {
-    Object.keys(item).forEach(key => {
-      if(key === 'kategori'){
-        item.kategori = item.kategori.namaKategori
-      }
-    })
-  })
 
   let newArr = [];
   subkategori.forEach(item => {
@@ -44,12 +36,12 @@ const getSubkategoris = async (req, res) => {
     final.namaKategori = item.kategori.namaKategori;
     newArr.push(final)
   })
+  console.log(subkategori)
   if(subkategori.length !== 0){
     const rest = {
       newArr,
       totalPage,
     };
-    
     res.json(rest);
     return
   }
@@ -102,7 +94,7 @@ router.post(
         kategori
       });
       await subkategori.save();
-      res.json({msg : 'saved'});
+      getSubkategoris(req, res);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");

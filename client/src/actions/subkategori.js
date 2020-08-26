@@ -2,13 +2,27 @@ import axios from 'axios';
 import {
     GET_SUBKATEGORIES,
     GET_SUBKATEGORI,
-    ADD_SUB_KATEGORI_ERROR,
+    ADD_SUBKATEGORI_ERROR,
     GET_ALL_SUBKATEGORIES,
     UPDATE_SUBKATEGORI_ERROR,
-    DELETE_SUBKATEGORI_ERROR
-} from './subkategori'
+    DELETE_SUBKATEGORI_ERROR,
+    OPEN_MODAL,
+    CLOSE_MODAL
+} from './types'
 
-export const
+export const open = () => dispatch => {
+    dispatch({
+        type: OPEN_MODAL,
+        payload : true
+    })
+}
+
+export const close = () => dispatch => {
+    dispatch({
+        type: CLOSE_MODAL,
+        payload: false
+    })
+}
 
 export const store = (formData) => async dispatch => {
     try {
@@ -18,21 +32,23 @@ export const store = (formData) => async dispatch => {
             },
         };
         const res = await axios.post('/api/subkategori', formData, config);
+        
         dispatch({
             type: GET_SUBKATEGORIES,
-            payload : res.data
+            payload : res.data.newArr
         })
     } catch (error) {
         dispatch({
-            type: ADD_SUB_KATEGORI_ERROR,
+            type: ADD_SUBKATEGORI_ERROR,
             payload : error.response.data.errors
         })
     }
 }
 
-export const index = () => async dispatch => {
+export const getAllSubkategori = () => async dispatch => {
     try {
         const res = await axios.get('/api/subkategori/');
+       
         dispatch({
             type: GET_SUBKATEGORIES,
             payload : res.data

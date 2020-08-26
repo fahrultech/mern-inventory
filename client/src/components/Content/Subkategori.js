@@ -3,63 +3,66 @@ import Datatables from "../common/Datatables";
 import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import { getAllKategori } from '../../actions/kategori';
-import _ from 'lodash'
-import axios from "axios";
+import { getAllKategori } from "../../actions/kategori";
+import { store, show, getAllSubkategori, update, destroy, open, close } from "../../actions/subkategori";
+import _ from "lodash";
 
-const Subkategori = ({ getAllKategori, kategories }) => {
+const Subkategori = ({ 
+  getAllKategori, 
+  kategories, 
+  show,
+  index,
+  update,
+  store,
+  destroy,
+  subkategories,
+  subkategori,
+  error,
+  modal,
+  open,
+  close
+}) => {
   // State Block
-  const [body, setBody] = useState([]);
   const [formData, setFormData] = useState({
     idSubkategori: "",
     namaSubkategori: "",
     kategori: "",
   });
-  const [error, setError] = useState([]);
-  const [open, setOpen] = useState(false);
   const { namaSubkategori, kategori } = formData;
   // End Of State Block
 
   // Effect Block
   useEffect(() => {
-    getSubkategories()
-  }, []);
+    index();
+  }, [index]);
   useEffect(() => {
-    getAllKategori()
-  },[])
+    getAllKategori();
+  }, []);
   // End Of Effect Block
-  
-  const getSubkategories = async () => {
-    const res = ((await axios.get("/api/subkategori")).data);
-    setBody(body => [...body, res])
-  };
+ 
   const columns = [
     {
-      label: 'Nama Subkategori',
-      name : 'namaSubkategori'
+      label: "Nama Subkategori",
+      name: "namaSubkategori",
     },
     {
-      label : 'Nama Kategori',
-      name: 'namaKategori'
-    }
-  ]
-  const handleClose = () => setOpen(false);
-  const handleOpen = () =>{
-    setOpen(true);
+      label: "Nama Kategori",
+      name: "namaKategori",
+    },
+  ];
+  const handleClose = () => close();
+  const handleOpen = () => {
+    open()
   };
-  _.isObject(body[0]) ? console.log(body[0].newArr) : console.log('ni;')
   const onSelect = (e) => {
-    setFormData({...formData, kategori:e.target.value})
-  }
-  console.log(body[0])
+    setFormData({ ...formData, kategori: e.target.value });
+  };
   const submit = (e) => {
     e.preventDefault();
-    axios.post('/api/subkategori', formData).then(response => {
-      getSubkategories();
-    })
+    store(formData)
   };
   const onChange = (e) => {
-    setFormData({...formData, [e.target.name]:e.target.value})
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const fill = (id) => {
     console.log(id);
@@ -91,8 +94,7 @@ const Subkategori = ({ getAllKategori, kategories }) => {
                     edit={fill}
                     hapus={jii}
                     columns={columns}
-                    body={_.isObject(body[0]) ? body[0].newArr : []}
-                    head={["Nama Subkategori", "Nama Kategori"]}
+                    body={subkategories}
                   />
                 </div>
               </div>
@@ -100,7 +102,7 @@ const Subkategori = ({ getAllKategori, kategories }) => {
           </div>
         </div>
       </div>
-      <Modal show={open} onHide={handleClose}>
+      <Modal show={modal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Tambah Kategori</Modal.Title>
         </Modal.Header>
@@ -126,12 +128,20 @@ const Subkategori = ({ getAllKategori, kategories }) => {
             <div className="form-group">
               <label className="control-label col-md-3">Kategori</label>
               <div className="col-md-8">
-                <select value={kategori} name="categoryId" onChange={onSelect} className="form-control">
-                <option value="0">-- Pilih Kategori --</option>
-                {kategories !== 0 ? kategories.map((item,index) => (
-                  <option key={index} value={item._id}>{item.namaKategori}</option>
-                )): ''}
-                  
+                <select
+                  value={kategori}
+                  name="categoryId"
+                  onChange={onSelect}
+                  className="form-control"
+                >
+                  <option value="0">-- Pilih Kategori --</option>
+                  {kategories !== 0
+                    ? kategories.map((item, index) => (
+                        <option key={index} value={item._id}>
+                          {item.namaKategori}
+                        </option>
+                      ))
+                    : ""}
                 </select>
                 {error.length > 0 && (
                   <ul className="parsley-errors-list filled">
@@ -154,14 +164,36 @@ const Subkategori = ({ getAllKategori, kategories }) => {
 };
 
 Subkategori.propTypes = {
-  getAllKategori:PropTypes.func,
-  kategori:PropTypes.array
-}
+  getAllKategori: PropTypes.func,
+  kategori: PropTypes.array,
+  index : PropTypes.func,
+  show : PropTypes.func,
+  store : PropTypes.func,
+  update : PropTypes.func,
+  destroy : PropTypes.func,
+  open : PropTypes.func,
+  close : PropTypes.func,
+  modal : PropTypes.bool,
+  subkategories : PropTypes.object,
+  subkategori : PropTypes.object,
+  error : PropTypes.array
+};
 
-const mapStateToProps = state => ({
-  kategories : state.kategori.kategories
-})
+const mapStateToProps = (state) => ({
+  kategories: state.kategori.kategories,
+  subkategories: state.subkategori.subkategories,
+  subkategori: state.subkategori.subkategori,
+  error: state.subkategori.error,
+  modal: state.subkategori.modal,
+});
 
-
-
-export default connect(mapStateToProps, {getAllKategori})(Subkategori);
+export default connect(mapStateToProps, {
+  getAllKategori,
+  index:getAllSubkategori,
+  show,
+  store,
+  update,
+  destroy,
+  open,
+  close
+})(Subkategori);

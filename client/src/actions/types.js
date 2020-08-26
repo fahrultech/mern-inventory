@@ -1,3 +1,7 @@
+// General Types
+export const OPEN_MODAL = 'OPEN_MODAL'
+export const CLOSE_MODAL = 'CLOSE_MODAL'
+
 // Kategori Types
 export const GET_KATEGORIES = 'GET_KATEGORIES'
 export const GET_KATEGORI = 'GET_KATEGORI'

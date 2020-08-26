@@ -1,9 +1,20 @@
-import React, { Fragment, useEffect } from "react";
-import axios from 'axios';
+import React, { Fragment, useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import _ from 'lodash'
 
 const Datatables = ({ head, body, edit, hapus, columns }) => {
+  const [key, setKey] = useState();
+  const [pageData, setPageData] = useState({
+    pageSum: 10,
+    pageNumber: 1,
+    namaKategori: "",
+  });
+  const { newArr, totalPage } = body;
+  console.log(_.isEmpty(body))
   console.log(body)
+  const editItem = (data) => {
+    setPageData({ ...pageData, pageNumber: data.selected + 1 });
+  };
   return (
     <Fragment>
       <div className="row">
@@ -30,7 +41,7 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
               </select>
             </div>
             <div className="col-md-6 pull-right" style={{ padding: "0" }}>
-              {/* <input
+              <input
                 type="text"
                 onChange={(e) => {
                   setKey(Math.random());
@@ -42,7 +53,7 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
                 }}
                 name="cariNamaKategori"
                 className="form-control"
-              /> */}
+              />
             </div>
           </div>
            <table
@@ -58,8 +69,8 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
               </tr>
             </thead>
             <tbody>
-              {_.isObject(body[0]) ? 
-                body.map((item, index) => (
+              {!_.isEmpty(body) ? 
+                newArr.map((item, index) => (
                 <tr key={index}>
                   {columns.map((key,index) =>(
                     <td key={index}>{item[key.name]}</td>
@@ -82,13 +93,13 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
                 </tr>
               ))
               :
-              (<tr><td style={{ textAlign: 'center' }} colSpan={head.length+1}>No Data Available</td></tr>)
+              (<tr><td style={{ textAlign: 'center' }} colSpan={columns.length+1}>No Data Available</td></tr>)
             }
             </tbody>
           </table>
         </div>
       </div>
-      {/* <div className="row">
+      <div className="row">
         <div className="col-md-12">
           <ReactPaginate
             key={pageData.namaKategori}
@@ -102,7 +113,7 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
             initialPage={0}
           />
         </div>
-      </div> */}
+      </div>
     </Fragment>
   );
 };

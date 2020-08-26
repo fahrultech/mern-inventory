@@ -20,12 +20,14 @@ const getKategoris = async (req, res) => {
     (await Kategori.find({
       namaKategori: new RegExp(".*" + nama + ".*", "i"),
     }).count()) / pS;
+    
   const kategori = await Kategori.find({
     namaKategori: new RegExp(".*" + nama + ".*", "i"),
   })
     .skip((pN - 1) * pS)
     .limit(pS)
     .sort('namaKategori');
+    
   const rest = {
     kategori,
     totalPage,
