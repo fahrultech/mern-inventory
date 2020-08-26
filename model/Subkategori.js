@@ -6,8 +6,9 @@ const SubkategoriSchema = new Schema({
         type : String,
         required : true
     },
-    categoryId :{
+    kategori :{
         type : Schema.Types.ObjectId,
+        ref : 'kategori',
         required : true
     }
 })

@@ -12,7 +12,7 @@ connectDB();
 // Initialisasi Middleware
 app.use(express.json({ extended: false }));
 
-const port = process.env.port || 4501;
+const port = process.env.port || 4500;
 
 //Define Route
 app.use("/api/customer", require("./router/api/customer"));

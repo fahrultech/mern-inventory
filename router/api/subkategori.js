@@ -25,18 +25,34 @@ const getSubkategoris = async (req, res) => {
   })
     .skip((pN - 1) * pS)
     .limit(pS)
-    .sort('namaSubkategori');
-  console.log(subkategori)
+    .sort('namaSubkategori')
+    .populate('kategori')
+  
+  const mm = subkategori.map(item => {
+    Object.keys(item).forEach(key => {
+      if(key === 'kategori'){
+        item.kategori = item.kategori.namaKategori
+      }
+    })
+  })
+
+  let newArr = [];
+  subkategori.forEach(item => {
+    const final = {id:'', namaSubkategori:'', namaKategori:''}
+    final.id = item._id;
+    final.namaSubkategori = item.namaSubkategori;
+    final.namaKategori = item.kategori.namaKategori;
+    newArr.push(final)
+  })
   if(subkategori.length !== 0){
     const rest = {
-      subkategori,
+      newArr,
       totalPage,
     };
-    console.log(rest)
+    
     res.json(rest);
     return
   }
-  
   res.json();
 };
 
@@ -64,15 +80,15 @@ router.post(
   "/",
   [
       check("namaSubkategori", "Nama Subkategori Harus Di Masukkan").not().isEmpty(),
-      check("categoryId", "Kategori Harus Di Masukkan").not().isEmpty()
+      check("kategori", "Kategori Harus Di Masukkan").not().isEmpty()
   ],
   async (req, res) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req.body);
 
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
-    const { namaSubkategori, categoryId } = req.body;
+    const { namaSubkategori, kategori } = req.body;
     const findName = await Kategori.find({ namaSubkategori });
 
     if (findName.length !== 0) {
@@ -83,7 +99,7 @@ router.post(
     try {
       const subkategori = new Subkategori({
         namaSubkategori,
-        categoryId
+        kategori
       });
       await subkategori.save();
       res.json({msg : 'saved'});

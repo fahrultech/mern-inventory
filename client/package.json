@@ -45,5 +45,5 @@
     "bootstrap": "^3.3.7",
     "react-router-dom": "^5.0.0"
   },
-  "proxy": "http://localhost:4501"
+  "proxy": "http://localhost:4500"
 }

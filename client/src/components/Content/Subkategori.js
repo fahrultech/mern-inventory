@@ -13,11 +13,11 @@ const Subkategori = ({ getAllKategori, kategories }) => {
   const [formData, setFormData] = useState({
     idSubkategori: "",
     namaSubkategori: "",
-    categoryId: "",
+    kategori: "",
   });
   const [error, setError] = useState([]);
   const [open, setOpen] = useState(false);
-  const { namaSubkategori, categoryId } = formData;
+  const { namaSubkategori, kategori } = formData;
   // End Of State Block
 
   // Effect Block
@@ -33,22 +33,31 @@ const Subkategori = ({ getAllKategori, kategories }) => {
     const res = ((await axios.get("/api/subkategori")).data);
     setBody(body => [...body, res])
   };
+  const columns = [
+    {
+      label: 'Nama Subkategori',
+      name : 'namaSubkategori'
+    },
+    {
+      label : 'Nama Kategori',
+      name: 'namaKategori'
+    }
+  ]
   const handleClose = () => setOpen(false);
   const handleOpen = () =>{
     setOpen(true);
   };
-  _.isObject(body[0]) ? console.log(body[0].subkategori) : console.log('ni;')
+  _.isObject(body[0]) ? console.log(body[0].newArr) : console.log('ni;')
   const onSelect = (e) => {
-    setFormData({...formData, categoryId:e.target.value})
+    setFormData({...formData, kategori:e.target.value})
   }
-  
+  console.log(body[0])
   const submit = (e) => {
     e.preventDefault();
     axios.post('/api/subkategori', formData).then(response => {
-      console.log('api')
+      getSubkategories();
     })
   };
-
   const onChange = (e) => {
     setFormData({...formData, [e.target.name]:e.target.value})
   };
@@ -81,7 +90,8 @@ const Subkategori = ({ getAllKategori, kategories }) => {
                   <Datatables
                     edit={fill}
                     hapus={jii}
-                    body={_.isObject(body[0]) ? body[0].subkategori : []}
+                    columns={columns}
+                    body={_.isObject(body[0]) ? body[0].newArr : []}
                     head={["Nama Subkategori", "Nama Kategori"]}
                   />
                 </div>
@@ -116,7 +126,7 @@ const Subkategori = ({ getAllKategori, kategories }) => {
             <div className="form-group">
               <label className="control-label col-md-3">Kategori</label>
               <div className="col-md-8">
-                <select value={categoryId} name="categoryId" onChange={onSelect} className="form-control">
+                <select value={kategori} name="categoryId" onChange={onSelect} className="form-control">
                 <option value="0">-- Pilih Kategori --</option>
                 {kategories !== 0 ? kategories.map((item,index) => (
                   <option key={index} value={item._id}>{item.namaKategori}</option>

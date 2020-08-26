@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import axios from 'axios';
 import _ from 'lodash'
 
-const Datatables = ({ head, body, edit, hapus }) => {
+const Datatables = ({ head, body, edit, hapus, columns }) => {
   console.log(body)
   return (
     <Fragment>
@@ -51,8 +51,8 @@ const Datatables = ({ head, body, edit, hapus }) => {
           >
             <thead>
               <tr>
-                {head.map((item, index) => (
-                  <th key={index}>{item}</th>
+                {columns.map((item, index) => (
+                  <th key={index}>{item.label}</th>
                 ))}
                 <th>Aksi</th>
               </tr>
@@ -61,11 +61,9 @@ const Datatables = ({ head, body, edit, hapus }) => {
               {_.isObject(body[0]) ? 
                 body.map((item, index) => (
                 <tr key={index}>
-                  {Object.keys(item).map((key) => {
-                    if(key !== '_id' && key !== '__v'){
-                        return <td key={key}>{item[key]}</td>;
-                    }
-                  })}
+                  {columns.map((key,index) =>(
+                    <td key={index}>{item[key.name]}</td>
+                  ))}
                   <td style={{ textAlign: "center" }}>
                     <button
                       onClick={() => edit(item['_id'])}
