@@ -2,19 +2,21 @@ import React, { Fragment, useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import _ from 'lodash'
 
-const Datatables = ({ head, body, edit, hapus, columns }) => {
+const Datatables = ({ head, body, edit, hapus, columns, getP, sort }) => {
   const [key, setKey] = useState();
   const [pageData, setPageData] = useState({
     pageSum: 10,
     pageNumber: 1,
-    namaKategori: "",
+    nama: "",
   });
   const { newArr, totalPage } = body;
-  console.log(_.isEmpty(body))
-  console.log(body)
+  
   const editItem = (data) => {
     setPageData({ ...pageData, pageNumber: data.selected + 1 });
   };
+  useEffect(() => {
+    getP(pageData)
+  },[pageData])
   return (
     <Fragment>
       <div className="row">
@@ -48,7 +50,7 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
                   setPageData({
                     ...pageData,
                     pageNumber: 1,
-                    namaKategori: e.target.value,
+                    nama: e.target.value,
                   });
                 }}
                 name="cariNamaKategori"
@@ -102,7 +104,7 @@ const Datatables = ({ head, body, edit, hapus, columns }) => {
       <div className="row">
         <div className="col-md-12">
           <ReactPaginate
-            key={pageData.namaKategori}
+            key={pageData.nama}
             pageCount={totalPage}
             containerClassName="pagination"
             pageClassName="paginate_button"

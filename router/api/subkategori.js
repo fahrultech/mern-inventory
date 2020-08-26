@@ -15,6 +15,7 @@ const getSubkategoris = async (req, res) => {
     pN = parseInt(pageNumber);
     pS = parseInt(pageSum);
     nama = namaSubkategori;
+    console.log(namaSubkategori)
   }
   const totalPage =
     (await Subkategori.find({
@@ -36,7 +37,6 @@ const getSubkategoris = async (req, res) => {
     final.namaKategori = item.kategori.namaKategori;
     newArr.push(final)
   })
-  console.log(subkategori)
   if(subkategori.length !== 0){
     const rest = {
       newArr,
@@ -50,7 +50,6 @@ const getSubkategoris = async (req, res) => {
 
 router.get("/", (req, res) => {
   try {
-    console.log('caleed')
     getSubkategoris(req, res)
   } catch (err) {
     console.error(err.message);

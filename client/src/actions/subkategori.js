@@ -35,7 +35,7 @@ export const store = (formData) => async dispatch => {
         
         dispatch({
             type: GET_SUBKATEGORIES,
-            payload : res.data.newArr
+            payload : res.data
         })
     } catch (error) {
         dispatch({
@@ -45,9 +45,15 @@ export const store = (formData) => async dispatch => {
     }
 }
 
-export const getAllSubkategori = () => async dispatch => {
+export const getAllSubkategori = (pageData) => async dispatch => {
     try {
-        const res = await axios.get('/api/subkategori/');
+        const res = await axios.get('/api/subkategori/',{
+            params: {
+                pageSum : pageData.pageSum,
+                pageNumber : pageData.pageNumber,
+                namaSubkategori : pageData.namaSubkategori
+            }
+        });
        
         dispatch({
             type: GET_SUBKATEGORIES,

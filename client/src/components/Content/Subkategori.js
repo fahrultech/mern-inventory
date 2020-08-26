@@ -30,16 +30,22 @@ const Subkategori = ({
   });
   const { namaSubkategori, kategori } = formData;
   // End Of State Block
-
+  const [pageData, setPageData] = useState({
+    pageSum: 10,
+    pageNumber: 1,
+    namaSubkategori: "",
+  });
   // Effect Block
   useEffect(() => {
-    index();
+    index(pageData);
   }, [index]);
+  useEffect(() => {
+    index(pageData);
+  }, [pageData]);
   useEffect(() => {
     getAllKategori();
   }, []);
   // End Of Effect Block
- 
   const columns = [
     {
       label: "Nama Subkategori",
@@ -52,6 +58,7 @@ const Subkategori = ({
   ];
   const handleClose = () => close();
   const handleOpen = () => {
+    setFormData({...formData, idSubkategori:'',namaSubkategori:'',kategori:'' })
     open()
   };
   const onSelect = (e) => {
@@ -64,12 +71,18 @@ const Subkategori = ({
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const fill = (id) => {
+  
+  // Fungsi Wajib Bagi Data Tables
+  const editSubkategori = (id) => {
+    show(id)
+  };
+  const hapusSubkategori = (id) => {
     console.log(id);
   };
-  const jii = (id) => {
-    console.log(id);
-  };
+  const getData = (data) =>{
+    const { pageSum, pageNumber, nama } = data;
+    setPageData({...pageData, pageSum, pageNumber, namaSubkategori:nama})
+  }
   return (
     <Fragment>
       <div className="">
@@ -91,8 +104,9 @@ const Subkategori = ({
                     <i className="fa fa-plus-circle"></i> Tambah
                   </button>
                   <Datatables
-                    edit={fill}
-                    hapus={jii}
+                    edit={editSubkategori}
+                    hapus={hapusSubkategori}
+                    getP={getData}
                     columns={columns}
                     body={subkategories}
                   />
