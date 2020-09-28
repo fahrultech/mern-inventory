@@ -571,6 +571,9 @@ fieldset[disabled] .form-control {
 .modal-content .panel {
   border-top: none;
 }
+.modal-content {
+  background-color: #323c48!important;
+}
 .tabs-vertical-env .tab-content {
   margin-bottom: 0px;
 }

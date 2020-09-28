@@ -15,7 +15,6 @@ const getSubkategoris = async (req, res) => {
     pN = parseInt(pageNumber);
     pS = parseInt(pageSum);
     nama = namaSubkategori;
-    console.log(namaSubkategori)
   }
   const totalPage =
     (await Subkategori.find({
@@ -62,7 +61,7 @@ router.get("/:id", async (req, res) => {
     const subkategori = await Subkategori.findById(req.params.id);
     res.json(subkategori);
   } catch (error) {
-    console.error(err.message);
+    console.error(error.message);
     res.status(500).send("Server Error");
   }
 });
@@ -103,18 +102,25 @@ router.post(
 
 router.delete("/:id", async (req, res) => {
   try {
-    await Subkategori.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Subkategori Deleted" });
+    await Subkategori.findByIdAndDelete(req.params.id); 
+    getSubkategoris(req, res);
   } catch (error) {}
 });
 
+router.get('/getbykategori/:id', async (req, res) => {
+  try {
+    const subkategori = await Subkategori.find({kategori : req.params.id});
+    res.json(subkategori);
+  } catch (error) {
+    res.status(500).json({msg : 'Server Error'}) 
+  }
+})
 router.put("/:id", async (req, res) => {
   try {
-    const { namaSubkategori } = req.body;
+    const { namaSubkategori, kategori } = req.body;
     const subkategori = await Subkategori.findByIdAndUpdate(
       { _id: req.params.id },
-      { namaKategori },
-      { categoryId }
+      { namaSubkategori, kategori },
     );
     getSubkategoris(req,res)
   } catch (error) {}

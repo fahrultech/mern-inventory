@@ -7,7 +7,8 @@ import {
     UPDATE_SUBKATEGORI_ERROR,
     DELETE_SUBKATEGORI_ERROR,
     OPEN_MODAL,
-    CLOSE_MODAL
+    CLOSE_MODAL,
+    GET_SUBKATEGORIES_BY_CATEGORY
 } from './types'
 
 export const open = () => dispatch => {
@@ -67,6 +68,7 @@ export const getAllSubkategori = (pageData) => async dispatch => {
 export const show = id => async dispatch => {
     try {
         const res = await axios.get('/api/subkategori/'+id);
+        console.log(res.data)
         dispatch({
             type: GET_SUBKATEGORI,
             payload: res.data
@@ -104,4 +106,19 @@ export const destroy = id => async dispatch =>{
             payload : error.response.data.errors
         })
     }
+}
+
+export const getSubkategoriByKategoriId = id => async dispatch => {
+    try {
+        const res = await axios.get(`api/subkategori/getbykategori/${id}`);
+        console.log(res.data)
+        dispatch({
+            type : GET_SUBKATEGORIES_BY_CATEGORY,
+            payload : res.data
+        })
+    } catch (error) {
+    }
+    
+    
+
 }

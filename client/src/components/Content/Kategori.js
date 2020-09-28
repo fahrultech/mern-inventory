@@ -4,7 +4,10 @@ import { connect } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
 import _ from "lodash";
 import ReactPaginate from "react-paginate";
+import { ExportToCsv } from 'export-to-csv';
+
 import {
+  getAllKategori,
   getKategories,
   addKategori,
   deleteKategori,
@@ -13,8 +16,10 @@ import {
   closeModal,
   updateKategori,
 } from "../../actions/kategori";
+import Axios from "axios";
 
 const Kategori = ({
+  getAllKategori,
   deleteKategori,
   addKategori,
   getKategories,
@@ -79,7 +84,26 @@ const Kategori = ({
   const selectOnChange = (e) => {
     setPageData({ ...pageData, pageSum: parseInt(e.target.value) });
   };
-
+  
+  const exportCsv = async () => {
+     const res = await Axios.get('/api/kategori/no');
+     const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      showTitle: true,
+      title: 'kategori_csv',
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+      // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+    };
+   
+  const csvExporter = new ExportToCsv(options);
+   
+  csvExporter.generateCsv(res.data);
+  }
   // Store or Update Kategori
   const submit = (e) => {
     e.preventDefault();
@@ -136,6 +160,11 @@ const Kategori = ({
                   >
                     <i className="fa fa-plus-circle"></i> Kategori
                   </button>
+                  <button
+                    style={{ marginBottom: "20px",marginLeft:"5px" }}
+                    className="btn btn-warning btn-sm"
+                    onClick={exportCsv}
+                  >Export</button>
                   <div className="row">
                     <div className="col-md-12 col-sm-12 col-xs-12">
                       <div
@@ -295,4 +324,5 @@ export default connect(mapStateToProps, {
   openModal,
   closeModal,
   updateKategori,
+  getAllKategori
 })(Kategori);

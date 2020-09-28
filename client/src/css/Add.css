@@ -38,3 +38,10 @@
   textarea {
     resize: none;
   }
+
+  .modal-content {
+    background-color: #323c48;
+  }
+  .modal .modal-title {
+    color: #fff
+  }

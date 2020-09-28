@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { getAllKategori } from "../../actions/kategori";
 import { store, show, getAllSubkategori, update, destroy, open, close } from "../../actions/subkategori";
 import _ from "lodash";
+import axios from "axios";
 
 const Subkategori = ({ 
   getAllKategori, 
@@ -29,6 +30,7 @@ const Subkategori = ({
     kategori: "",
   });
   const { namaSubkategori, kategori } = formData;
+  const [editStatus, setEditStatus] = useState(false);
   // End Of State Block
   const [pageData, setPageData] = useState({
     pageSum: 10,
@@ -46,6 +48,30 @@ const Subkategori = ({
     getAllKategori();
   }, []);
   // End Of Effect Block
+  
+  const handleClose = () => close();
+  const handleOpen = () => {
+    setEditStatus(false);
+    setFormData({...formData, idSubkategori:'',namaSubkategori:'',kategori:'' })
+    open()
+  };
+  const onSelect = (e) => {
+    setFormData({ ...formData, kategori: e.target.value });
+  };
+  const submit = (e) => {
+    console.log(formData)
+    e.preventDefault();
+    if(!editStatus){
+      store(formData)
+      return;
+    }
+    console.log('dol')
+    update(formData, formData.idSubkategori);
+  };
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  // Fungsi Wajib Bagi Data Tables
   const columns = [
     {
       label: "Nama Subkategori",
@@ -56,33 +82,21 @@ const Subkategori = ({
       name: "namaKategori",
     },
   ];
-  const handleClose = () => close();
-  const handleOpen = () => {
-    setFormData({...formData, idSubkategori:'',namaSubkategori:'',kategori:'' })
+  const editSubkategori = async (id) => {
+    setEditStatus(true)
+    const res = await axios.get('/api/subkategori/'+id);
+    const {_id, namaSubkategori, kategori} = res.data
+    setFormData({...formData, idSubkategori:_id, namaSubkategori, kategori})
     open()
   };
-  const onSelect = (e) => {
-    setFormData({ ...formData, kategori: e.target.value });
-  };
-  const submit = (e) => {
-    e.preventDefault();
-    store(formData)
-  };
-  const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-  
-  // Fungsi Wajib Bagi Data Tables
-  const editSubkategori = (id) => {
-    show(id)
-  };
   const hapusSubkategori = (id) => {
-    console.log(id);
+    destroy(id)
   };
   const getData = (data) =>{
     const { pageSum, pageNumber, nama } = data;
     setPageData({...pageData, pageSum, pageNumber, namaSubkategori:nama})
   }
+  // End Funsgi Wajib
   return (
     <Fragment>
       <div className="">

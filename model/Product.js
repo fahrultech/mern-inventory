@@ -3,29 +3,36 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema(
   {
-    kodeBarang: {
+    kode: {
       type: String
     },
-    namaBarang: {
+    nama: {
       type: String,
       required: true
     },
     supplier: {
-      type: String
+      type: Schema.Types.ObjectId,
+      ref : 'supplier',
+      required : true
     },
-    kodeKategori: {
-      type: String
+    kategori: {
+      type: Schema.Types.ObjectId,
+      ref : 'kategori',
+      required : true
     },
-    kodeSubkategori: {
-      type: String
+    subkategori: {
+      type: Schema.Types.ObjectId,
+      required : true
     },
     kemasan: {
-      type: String
+      type: String,
+      required : true
     },
     satuan: {
-      type: String
+      type: String,
+      required : true
     },
-    hpp: {
+    hargaBeli: {
       type: Number
     },
     hargaJual: {

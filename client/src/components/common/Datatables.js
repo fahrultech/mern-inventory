@@ -79,14 +79,14 @@ const Datatables = ({ head, body, edit, hapus, columns, getP, sort }) => {
                   ))}
                   <td style={{ textAlign: "center" }}>
                     <button
-                      onClick={() => edit(item['_id'])}
+                      onClick={() => edit(item.id)}
                       className="btn btn-xs btn-warning"
                     >
                       <i className="mdi mdi-pencil"></i>
                     </button>
                     <> </>
                     <button
-                      onClick={() => hapus(item['_id'])}
+                      onClick={() => hapus(item.id)}
                       className="btn btn-xs btn-danger"
                     >
                       <i className="mdi mdi-delete"></i>

@@ -5,11 +5,12 @@ import {
   UPDATE_SUBKATEGORI_ERROR,
   GET_ALL_SUBKATEGORIES,
   DELETE_SUBKATEGORI_ERROR,
+  GET_SUBKATEGORIES_BY_CATEGORY,
   OPEN_MODAL,
   CLOSE_MODAL
-} from "../actions/types";
-
+} from '../actions/types'
 const initialState = {
+    subkategoriesByCategory:[],
     subkategori:{},
     subkategories:{},
     error:[],
@@ -30,6 +31,12 @@ export default function(state = initialState, action){
             return {
                 ...state,
                 modal : payload
+            }
+        case GET_SUBKATEGORI:
+            return {
+                ...state,
+                kategori : payload,
+                open : true
             }
         case GET_SUBKATEGORIES:
             return {
@@ -54,6 +61,11 @@ export default function(state = initialState, action){
                 ...state,
                 error: payload,
                 modal:false
+            }
+        case GET_SUBKATEGORIES_BY_CATEGORY:
+            return {
+                ...state,
+                subkategoriesByCategory : payload
             }
         default:
             return state
